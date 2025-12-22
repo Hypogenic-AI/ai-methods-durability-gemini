@@ -2,12 +2,25 @@
   "success": false,
   "stages": {
     "resource_finder": {
-      "success": false,
-      "completion_marker": null,
-      "outputs": {},
+      "success": true,
+      "completion_marker": "/data/hypogenicai/workspaces/ai-methods-durability-gemini/.resource_finder_complete",
+      "outputs": {
+        "literature_review": "/data/hypogenicai/workspaces/ai-methods-durability-gemini/literature_review.md",
+        "resources_catalog": "/data/hypogenicai/workspaces/ai-methods-durability-gemini/resources.md",
+        "papers_dir": "/data/hypogenicai/workspaces/ai-methods-durability-gemini/papers",
+        "datasets_dir": "/data/hypogenicai/workspaces/ai-methods-durability-gemini/datasets",
+        "code_dir": "/data/hypogenicai/workspaces/ai-methods-durability-gemini/code"
+      },
       "log_file": "/data/hypogenicai/workspaces/ai-methods-durability-gemini/logs/resource_finder_gemini.log",
       "transcript_file": "/data/hypogenicai/workspaces/ai-methods-durability-gemini/logs/resource_finder_gemini_transcript.jsonl",
-      "elapsed_time": 11.909144163131714
+      "elapsed_time": 1171.526909828186
+    },
+    "experiment_runner": {
+      "success": false,
+      "return_code": 1,
+      "elapsed_time": 445.6460859775543,
+      "log_file": "/data/hypogenicai/workspaces/ai-methods-durability-gemini/logs/execution_gemini.log",
+      "transcript_file": "/data/hypogenicai/workspaces/ai-methods-durability-gemini/logs/execution_gemini_transcript.jsonl"
     }
   },
   "work_dir": "/data/hypogenicai/workspaces/ai-methods-durability-gemini"
