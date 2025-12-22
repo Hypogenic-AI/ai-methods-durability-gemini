@@ -1,0 +1,30 @@
+idea:
+  title: Measuring the "Durability" of Methods in AI Research
+  domain: artificial_intelligence
+  hypothesis: 'It is possible to systematically measure the "durability" of AI research
+    methods by comparing their performance against newer state-of-the-art models.
+    Methods that are outperformed by newer models can be flagged as deprecated, while
+    those that remain competitive are marked as durable, helping to identify which
+    research contributions remain practically relevant over time.
+
+    '
+  background:
+    description: "The rapid pace of AI research has led to a large number of papers\
+      \ that risk becoming outdated as soon as stronger models are released. This\
+      \ creates a relevancy crisis, where many methods are technically reproducible\
+      \ but may no longer be worth running. The idea is to develop a tool that can\
+      \ automatically assess the \"shelf life\" of a paper's method by comparing it\
+      \ to current state-of-the-art models. If the newer models outperform the original\
+      \ method, the paper is flagged as deprecated; if not, it is marked as durable.\
+      \ This approach aims to help filter out \"zombie papers\"\u2014methods that\
+      \ are reproducible but no longer practically useful\u2014while acknowledging\
+      \ that some papers may still offer durable insights or efficiency gains even\
+      \ if their performance is surpassed."
+  metadata:
+    source: IdeaHub
+    source_url: https://hypogenic.ai/ideahub/idea/B8qjEsHqThTiPcapogny
+    idea_id: measuring_the__durability__of__20251222_002559_81b9e3b9
+    created_at: '2025-12-22T00:25:59.465327'
+    status: submitted
+    github_repo_name: ai-methods-durability-gemini
+    github_repo_url: https://github.com/Hypogenic-AI/ai-methods-durability-gemini
