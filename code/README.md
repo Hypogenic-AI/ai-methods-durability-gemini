@@ -1,10 +1,15 @@
 # Cloned Repositories
 
-No repositories have been cloned for this project.
+## Repo 1: McUDI Implementation
+- URL: [https://github.com/LorenaPoenaru/aiops_failure_prediction](https://github.com/LorenaPoenaru/aiops_failure_prediction)
+- Purpose: Implementation of the McUDI paper.
+- Location: code/mcudi_implementation/
+- Key files: Not yet analyzed.
+- Notes: This repository contains the code for the paper "McUDI: Model-Centric Unsupervised Degradation Indicator for Failure Prediction AIOps Solutions".
 
-## Repo 1: McUDI
-- **URL**: Not found
-- **Purpose**: Implementation of the McUDI model
-- **Location**: Not applicable
-- **Key files**: Not applicable
-- **Notes**: The paper "McUDI: A Model-Centric Unsupervised Degradation Indicator for AIOps Models" states that the code is publicly available, but I was unable to find it after a thorough search. It is possible that the code has not been released yet or is hosted on a different platform.
+## Repo 2: River
+- URL: [https://github.com/online-ml/river](https://github.com/online-ml/river)
+- Purpose: A Python library for online machine learning, including concept drift detection algorithms.
+- Location: code/river/
+- Key files: Not yet analyzed.
+- Notes: This library is the successor to `scikit-multiflow` and contains implementations of algorithms like DDM, EDDM, and ADWIN.

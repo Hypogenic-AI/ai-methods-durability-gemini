@@ -1,5 +1,5 @@
 {
-  "success": false,
+  "success": true,
   "stages": {
     "resource_finder": {
       "success": true,
@@ -13,12 +13,12 @@
       },
       "log_file": "/data/hypogenicai/workspaces/ai-methods-durability-gemini/logs/resource_finder_gemini.log",
       "transcript_file": "/data/hypogenicai/workspaces/ai-methods-durability-gemini/logs/resource_finder_gemini_transcript.jsonl",
-      "elapsed_time": 1171.526909828186
+      "elapsed_time": 2792.8194699287415
     },
     "experiment_runner": {
-      "success": false,
-      "return_code": 1,
-      "elapsed_time": 445.6460859775543,
+      "success": true,
+      "return_code": 0,
+      "elapsed_time": 17699.101026773453,
       "log_file": "/data/hypogenicai/workspaces/ai-methods-durability-gemini/logs/execution_gemini.log",
       "transcript_file": "/data/hypogenicai/workspaces/ai-methods-durability-gemini/logs/execution_gemini_transcript.jsonl"
     }

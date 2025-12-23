@@ -3,8 +3,8 @@
   "stages": {
     "resource_finder": {
       "status": "completed",
-      "started_at": "2025-12-22T00:27:31.941030",
-      "completed_at": "2025-12-22T00:47:03.468780",
+      "started_at": "2025-12-22T23:00:29.332260",
+      "completed_at": "2025-12-22T23:47:02.153608",
       "success": true,
       "outputs": {
         "literature_review": "/data/hypogenicai/workspaces/ai-methods-durability-gemini/literature_review.md",
@@ -15,19 +15,20 @@
       }
     },
     "experiment_runner": {
-      "status": "failed",
-      "started_at": "2025-12-22T00:47:03.469095",
-      "completed_at": "2025-12-22T00:54:29.131841",
-      "success": false,
+      "status": "completed",
+      "started_at": "2025-12-22T23:47:02.153990",
+      "completed_at": "2025-12-23T04:42:01.272630",
+      "success": true,
       "outputs": {
-        "success": false,
-        "return_code": 1,
-        "elapsed_time": 445.6460859775543,
+        "success": true,
+        "return_code": 0,
+        "elapsed_time": 17699.101026773453,
         "log_file": "/data/hypogenicai/workspaces/ai-methods-durability-gemini/logs/execution_gemini.log",
         "transcript_file": "/data/hypogenicai/workspaces/ai-methods-durability-gemini/logs/execution_gemini_transcript.jsonl"
       }
     }
   },
   "current_stage": null,
-  "completed": false
+  "completed": true,
+  "completed_at": "2025-12-23T04:42:01.273038"
 }

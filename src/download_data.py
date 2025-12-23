@@ -21,5 +21,23 @@ def download_backblaze_data():
         print(f"An error occurred: {e}")
         print("Please follow the manual download instructions in datasets/README.md")
 
+def download_newsroom_data():
+    """
+    Downloads and saves the Newsroom dataset.
+    """
+    print("Downloading Newsroom dataset...")
+    try:
+        dataset = load_dataset("lil-lab/newsroom")
+        output_path = "datasets/newsroom"
+        print(f"Saving dataset to {output_path}...")
+        if not os.path.exists("datasets"):
+            os.makedirs("datasets")
+        dataset.save_to_disk(output_path)
+        print("Dataset saved successfully.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        print("Please follow the manual download instructions in datasets/README.md")
+
 if __name__ == "__main__":
     download_backblaze_data()
+    download_newsroom_data()

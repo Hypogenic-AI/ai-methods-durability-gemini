@@ -1,5 +1,5 @@
 Resource finding phase completed successfully.
-Timestamp: 2025-12-22T00:45:57-06:00
-Papers downloaded: 3
-Datasets downloaded: 0
-Repositories cloned: 0
+Timestamp: $(date -Iseconds)
+Papers downloaded: 6
+Datasets identified: 2
+Repositories cloned: 2

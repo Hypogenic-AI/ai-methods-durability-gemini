@@ -1,93 +1,86 @@
 ## Research Question
-Can we systematically measure the "durability" of an AI research method by comparing its performance over time and using newer methods to detect degradation?
+How can we systematically measure the "durability" of a disk failure prediction model in the presence of concept drift?
 
 ## Background and Motivation
-The rapid pace of AI research leads to a constant stream of new models and methods. This makes it difficult to know which published methods are still relevant and which have been effectively superseded. This research aims to develop a systematic way to measure the "shelf-life" or "durability" of an AI method. This will help researchers and practitioners focus on methods that provide lasting value.
+The rapid pace of change in data distributions, a phenomenon known as "concept drift", is a major challenge in maintaining the performance of machine learning models in production. This is particularly true in AIOps, where models are used to monitor and predict the health of complex systems like hard disk fleets. A model that is accurate at the time of deployment may become obsolete as the characteristics of the data change over time. This project aims to develop a systematic way to measure the "durability" of different methods for handling concept drift in the context of disk failure prediction.
 
 ## Hypothesis Decomposition
-To test the main research question, I will focus on a specific, testable hypothesis:
-
-*   **Hypothesis:** The performance of a predictive model trained on time-series data will degrade over time as the data distribution shifts (concept drift). This degradation can be detected by an unsupervised degradation indicator, thus providing a measure of the model's "durability".
+*   **Hypothesis 1:** A simple model for disk failure prediction, trained once on historical data, will show a significant degradation in performance when evaluated on data from a later time period.
+*   **Hypothesis 2:** Methods that explicitly handle concept drift, either by periodic retraining or by using drift detectors, will be more "durable" and maintain a higher level of performance over time.
+*   **Hypothesis 3:** More advanced, state-of-the-art methods like McUDI will offer a better trade-off between performance and the cost of retraining compared to simpler methods.
+*   **Definition of "Durability":** For this research, "durability" will be a qualitative measure based on the rate of performance decay over time and the computational cost (number of retrainings) required to maintain a certain level of performance.
 
 ## Proposed Methodology
 
 ### Approach
-I will simulate the aging of an AI model by training it on an early portion of a time-series dataset and then evaluating it on later portions. I will use the Backblaze Hard Drive Stats dataset, as it contains daily snapshots of hard drive health metrics, which is ideal for studying concept drift.
-
-I will implement a simple "older" model (Logistic Regression) and a "newer" method for detecting data degradation based on the McUDI paper. By comparing the model's actual performance degradation with the degradation predicted by the McUDI-inspired method, I can test if this is a valid way to measure durability.
+The experiment will simulate a real-world, online learning scenario where a model is used to predict disk failures based on the Backblaze Hard Drive Stats dataset from 2015. The dataset will be processed chronologically, and different methods for handling concept drift will be compared.
 
 ### Experimental Steps
-1.  **Data Acquisition and Preprocessing:**
-    *   Download the Backblaze Drive Stats dataset for the year 2015 using the HuggingFace `datasets` library.
-    *   Preprocess the data:
-        *   Handle missing values.
-        *   Select a subset of features for the model.
-        *   Encode categorical features.
-        *   Split the data chronologically into monthly batches.
+1.  **Data Preparation:**
+    *   Load the Backblaze Hard Drive Stats dataset for 2015.
+    *   Perform necessary preprocessing and feature engineering. This will likely involve selecting relevant SMART features, handling missing values, and creating a binary failure label. The notebooks in the `code/mcudi_implementation` will be used as a guide.
+    *   The data will be split into temporal chunks, for example, by week, to simulate the online arrival of data.
 
-2.  **"Older" Model Implementation:**
-    *   Implement a Logistic Regression model using `scikit-learn`. This will serve as our "older" method.
+2.  **Baseline Model (Static):**
+    *   Train a baseline model (e.g., `river.linear_model.LogisticRegression`) on the first chunk of data (e.g., the first month).
+    *   Evaluate the model's performance (AUC-ROC) on all subsequent chunks of data without any retraining. This will serve as the baseline for performance degradation.
 
-3.  **Initial Model Training:**
-    *   Train the Logistic Regression model on the first month of data (January 2015). This will be our initial "durable" model.
+3.  **Periodic Retraining:**
+    *   Train a model on the first chunk of data.
+    *   Retrain the model at fixed intervals (e.g., every month) by adding the new data to the training set.
+    *   Evaluate the model's performance over time.
 
-4.  **"Newer" Method Implementation (McUDI-inspired):**
-    *   Implement the core logic of the McUDI degradation indicator. Based on the paper, this involves:
-        *   Ranking features by importance (e.g., using the coefficients from the trained Logistic Regression model).
-        *   For the most important features, perform a Kolmogorov-Smirnov (KS) test to compare the distribution of the feature in the training data (January 2015) with its distribution in a subsequent month's data.
-        *   If the KS statistic is above a certain threshold for any of the key features, flag the model as potentially "degraded" for that month.
+4.  **Drift-based Retraining:**
+    *   Train a model on the first chunk of data.
+    *   Use a concept drift detector from the `river` library (e.g., `ADWIN`) to monitor the model's performance or the data distribution.
+    *   Trigger retraining only when a drift is detected.
+    *   Evaluate the model's performance and the number of retrainings over time.
 
-5.  **Evaluation Over Time:**
-    *   For each subsequent month (February to December 2015):
-        *   Evaluate the performance of the single, initially-trained Logistic Regression model on that month's data. Use metrics like AUC-ROC and F1-score.
-        *   Run the McUDI-inspired degradation check to see if it flags that month's data as drifted.
-
-6.  **Analysis:**
-    *   Plot the model's performance (AUC-ROC) over the 12 months.
-    *   On the same plot, indicate which months were flagged as "degraded" by the McUDI indicator.
-    *   Analyze the correlation: Does the McUDI flag precede or coincide with a significant drop in model performance?
+5.  **State-of-the-Art Method (McUDI):**
+    *   Adapt the McUDI implementation from the `code/mcudi_implementation` repository.
+    *   Use McUDI to detect concept drift and trigger retraining.
+    *   Evaluate the model's performance and the number of retrainings over time.
 
 ### Baselines
-*   **Static Model:** The Logistic Regression model trained only on January 2015 data serves as our primary subject of study. Its changing performance over time is what we are trying to measure.
-*   **Degradation Indicator:** The primary baseline for the degradation indicator is its own ability to predict a performance drop. Success is defined as the indicator's flags correlating with actual, measured performance drops.
+*   **Static Model:** A `river.linear_model.LogisticRegression` model trained once and never updated. This represents the lower bound of performance.
+*   **Periodic Retraining:** A model that is retrained at regular intervals. This is a common industry practice.
+*   **Drift-based Retraining:** A model that is retrained based on signals from a standard drift detection algorithm from the `river` library.
+*   **McUDI:** The method proposed in the McUDI paper, used as a state-of-the-art baseline.
 
 ### Evaluation Metrics
-*   **Model Performance:**
-    *   **AUC-ROC:** Area Under the Receiver Operating Characteristic Curve. This is a good metric for imbalanced classification tasks like failure prediction.
-    *   **F1-Score:** The harmonic mean of precision and recall.
-*   **Degradation Detection:**
-    *   **Correlation:** We will look for a correlation between the McUDI degradation flags and the actual drop in the model's AUC-ROC.
-    *   **Timeliness:** Does the degradation flag appear before the performance drops, giving a timely warning?
+*   **Predictive Performance:** The primary metric will be the **Area Under the Receiver Operating Characteristic Curve (AUC-ROC)**, which is suitable for imbalanced classification tasks like failure prediction.
+*   **Cost of Maintenance:** The **number of retrainings** will be used as a proxy for the computational cost and operational complexity of maintaining the model.
+*   **Drift Detection:** For methods that use drift detection, we will also track the **number of detected drifts**.
 
 ### Statistical Analysis Plan
-*   I will use a rolling window to calculate the performance metrics to smooth out noise.
-*   The KS-test p-value will be used to determine if a feature's distribution has significantly drifted. A significance level of p < 0.05 will be used.
-*   I will visually inspect the plots for correlation and report on the observed relationship.
+The primary output will be a plot of the AUC-ROC score over time (e.g., per week) for each of the methods. This will provide a visual comparison of their durability. We will also present a table summarizing the total number of retrainings for each method, along with the average AUC-ROC over the entire period.
 
 ## Expected Outcomes
-*   **Supporting the hypothesis:** I expect to see the logistic regression model's performance decrease over the months. I also expect the McUDI-based indicator to flag the months where the data distribution has shifted significantly, and that these flags will align with the periods of performance decline.
-*   **Refuting the hypothesis:** The model's performance might not degrade significantly, or the McUDI indicator might fail to flag the months where performance does drop. This would suggest that this method of measuring durability is not effective for this use case.
+*   The static model's performance is expected to degrade significantly over time.
+*   Periodic retraining should lead to better performance than the static model, but at a higher computational cost.
+*   Drift-based retraining and McUDI are expected to provide a good balance between performance and cost, maintaining high AUC-ROC scores while requiring fewer retrainings than the periodic approach.
+*   McUDI may outperform the standard drift detection methods from `river` in terms of finding a better trade-off between performance and cost.
 
 ## Timeline and Milestones
-*   **Phase 2: Environment & Data Setup (1-2 hours):**
-    *   Install dependencies.
-    *   Download and preprocess the dataset.
-*   **Phase 3: Implementation (2-3 hours):**
-    *   Implement the Logistic Regression model.
-    *   Implement the McUDI-inspired degradation indicator.
-*   **Phase 4: Experimentation (1-2 hours):**
-    *   Train the initial model.
-    *   Run the evaluation loop for all months.
-*   **Phase 5 & 6: Analysis & Documentation (1-2 hours):**
-    *   Analyze the results.
-    *   Create plots.
-    *   Write the final `REPORT.md`.
+*   **Phase 1: Planning (0.5 hours):** Complete this document.
+*   **Phase 2: Implementation (3 hours):**
+    *   Set up the environment and install dependencies.
+    *   Implement the data preparation pipeline.
+    *   Implement the experimental loop for all four methods.
+*   **Phase 3: Analysis (1.5 hours):**
+    *   Run the experiments and collect the results.
+    *   Generate plots and tables.
+    *   Analyze the results and draw conclusions.
+*   **Phase 4: Documentation (1 hour):**
+    *   Write the final `REPORT.md` and `README.md`.
 
 ## Potential Challenges
-*   **Data Size:** The dataset might be large, requiring efficient data processing.
-*   **Data Quality:** The data might have inconsistencies or require significant cleaning. The `datasets/README.md` already mentioned potential schema inconsistencies.
-*   **McUDI Implementation:** Implementing McUDI from the paper might be challenging without a reference implementation. I will have to make some implementation choices based on my interpretation of the paper.
-*   **Hyperparameter Tuning:** The KS-test threshold for flagging drift will need to be chosen carefully.
+*   **Data Preprocessing:** The Backblaze dataset is known to be noisy and requires careful preprocessing. The feature engineering part might be time-consuming.
+*   **Adapting McUDI:** The code from the McUDI repository might need significant adaptation to fit into the experimental framework.
+*   **Computational Cost:** The experiments might be computationally intensive, especially the retraining parts. The data size might need to be downsampled if the experiments take too long to run.
 
 ## Success Criteria
-The research will be considered successful if I can demonstrate a clear correlation between the output of the McUDI-inspired degradation indicator and the measured performance of the "older" logistic regression model on the time-series dataset. This would provide evidence that this is a viable approach for systematically measuring the "durability" of an AI method.
+The research will be considered successful if it produces:
+1.  A clear quantitative comparison of the performance of the different methods over time, presented in plots and tables.
+2.  An analysis of the trade-offs between predictive performance and the cost of maintenance for each method.
+3.  A well-documented and reproducible experimental pipeline for measuring the durability of models for disk failure prediction.
